@@ -213,6 +213,7 @@
 
         // ポモドーロタイマーのリセット
         function resetPomodoro() {
+            buzz_end();
             clearInterval(countdown); // タイマーをクリア
             document.getElementById('pomodoro-timer').textContent = '25:00'; // 時間を初期値に戻す
         }
