@@ -58,6 +58,8 @@ h2 {
     <div class="weather-info" id="afternoon">午後1時の天気: </div>
     <div class="weather-info" id="evening">午後5時の天気: </div>
 </div>
+<audio id="motiko_clouds" src="motiko_clouds.wav" type="audio/mp3"></audio>
+
 
 <p id="laundry">洗濯の判断: </p>
 <img id="laundry-img" src="" alt="洗濯の判断画像" width="200px">
@@ -81,11 +83,14 @@ async function getWeather() {
         let today = new Date();
         let hours = today.getHours();
 
+
         // 次の9時、13時、17時までの時間を計算
         let next9 = (hours >= 9) ? (33 - hours) : (9 - hours);
         let next13 = (hours >= 13) ? (37 - hours) : (13 - hours);
         let next17 = (hours >= 17) ? (41 - hours) : (17 - hours);
-
+        if(data.hourly[next9].weather[0].main === "Clouds") {
+            motiko_clouds_say();
+        }
         // 指定した時間の天気と気温を取得して表示
         document.getElementById('morning').innerHTML = "午前9時の天気:" + data.hourly[next9].weather[0].main + "<br> 気温: " + data.hourly[next9].temp + "°C";
         document.getElementById('afternoon').innerHTML = "午後1時の天気:" + data.hourly[next13].weather[0].main + "<br> 気温: " + data.hourly[next13].temp + "°C";
@@ -113,6 +118,10 @@ async function getWeather() {
         // エラーハンドリング: データの取得に失敗した場合
         alert('天気データの取得に失敗しました。'+ error);
     }
+}
+// ブザーの音を鳴らす
+function motiko_clouds_say() {
+    document.getElementById('motiko_clouds').play();
 }
 // ブザーの音を鳴らす
 function buzz_first() {
