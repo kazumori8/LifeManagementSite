@@ -2,85 +2,31 @@
 <html>
 
 <head>
-    <style>
-        body {
-            background-color: #ffffff;
-            font-family: Arial, sans-serif;
-            color: #204d64;
-            text-align: center;
-        }
-
-        button {
-            background-color: #204d64;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 12px;
-            /* ボタンに丸みを付ける */
-            cursor: pointer;
-            width: 20%;
-        }
-
-        button:hover {
-            opacity: 0.8;
-        }
-
-        h2 {
-            text-align: center;
-        }
-
-        #weather-box {
-            display: flex;
-            /* 天気のボックスを横並びに */
-            justify-content: center;
-            /* 中央寄せ */
-            gap: 10px;
-            /* ボックス間の隙間 */
-        }
-
-        .weather-info {
-            background-color: white;
-            /* ボックスの背景色を白に */
-            padding: 20px;
-            border-radius: 12px;
-            /* ボックスに丸みを付ける */
-            width: 200px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            /* ボックスに影を付ける */
-        }
-
-        #pomodoro-timer {
-            font-size: 2em;
-            margin-top: 50px;
-        }
-
-        body {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        #content {
-            flex: 1 0 auto;
-            margin-right: 2em;
-        }
-
-        #calendar {
-            flex: 0 0 auto;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 
 <body>
     <div id="content">
-        <h2>今日の天気</h2>
+        <h2 id="today-weather-header"></h2>
 
         <button type="button" onclick="getWeather()">天気をチェック</button>
 
         <div id="weather-box">
-            <div class="weather-info" id="morning">午前9時の天気: </div>
-            <div class="weather-info" id="afternoon">午後1時の天気: </div>
-            <div class="weather-info" id="evening">午後5時の天気: </div>
+            <div class="weather-info" id="morning">
+                <p id="morning-weather-text"></p>
+                <img id="morning-img" src="" alt="午前の天気" width="100px">
+                <p id="morning-weather-temp"></p>
+            </div>
+            <div class="weather-info" id="afternoon">
+                <p id="afternoon-weather-text"></p>
+                <img id="afternoon-img" src="" alt="午後の天気" width="100px">
+                <p id="afternoon-weather-temp"></p>
+            </div>
+            <div class="weather-info" id="evening">
+                <p id="evening-weather-text"></p>
+                <img id="evening-img" src="" alt="夕方の天気" width="100px">
+                <p id="evening-weather-temp"></p>
+            </div>
         </div>
         <audio id="motiko_clouds" src="motiko_clouds.wav" type="audio/mp3"></audio>
 
@@ -102,123 +48,7 @@
             style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
     </div>
 
-    <script>
-        window.onload = getWeather;
-        async function getWeather() {
-            try {
-                // OpenWeatherMapのOne Call APIからデータを取得
-                const response = await fetch('https://api.openweathermap.org/data/2.5/onecall?lat=34.7320499&lon=135.7336346&units=metric&exclude=current,minutely,daily,alerts&appid=a3dfe4d9f6480e3c5705172e6a5a2027');
-                const data = await response.json();
-                // 今日の日付を取得
-                let today = new Date();
-                let hours = today.getHours();
-
-
-                // 次の9時、13時、17時までの時間を計算
-                let next9 = (hours >= 9) ? (33 - hours) : (9 - hours);
-                let next13 = (hours >= 13) ? (37 - hours) : (13 - hours);
-                let next17 = (hours >= 17) ? (41 - hours) : (17 - hours);
-                if (data.hourly[next9].weather[0].main === "Clouds") {
-                    motiko_clouds_say();
-                }
-                // 指定した時間の天気と気温を取得して表示
-                document.getElementById('morning').innerHTML = "午前9時の天気:" + data.hourly[next9].weather[0].main + "<br> 気温: " + data.hourly[next9].temp + "°C";
-                document.getElementById('afternoon').innerHTML = "午後1時の天気:" + data.hourly[next13].weather[0].main + "<br> 気温: " + data.hourly[next13].temp + "°C";
-                document.getElementById('evening').innerHTML = "午後5時の天気:" + data.hourly[next17].weather[0].main + "<br>気温: " + data.hourly[next17].temp + "°C";
-
-                // 48時間の天気予報をチェックして洗濯の判断
-                let isLaundryDay = true;
-                for (let i = 0; i < 24; i++) {
-                    if (data.hourly[i].weather[0].main === "Rain") {
-                        isLaundryDay = false;
-                        break;
-                    }
-                }
-
-                // 洗濯の判断を表示
-                if (isLaundryDay) {
-                    document.getElementById('laundry').innerHTML = "洗濯の判断: 今日は洗濯に適しています。";
-                    document.getElementById('laundry-img').src = "washing-machine.png"; // 洗濯が可能なときは洗濯機の画像を表示
-                } else {
-                    document.getElementById('laundry').innerHTML = "洗濯の判断: 今日は洗濯を避けてください。";
-                    document.getElementById('laundry-img').src = "umbrella.png"; // 洗濯が難しいときは傘の画像を表示
-                }
-
-            } catch (error) {
-                // エラーハンドリング: データの取得に失敗した場合
-                alert('天気データの取得に失敗しました。' + error);
-            }
-        }
-        // ブザーの音を鳴らす
-        function motiko_clouds_say() {
-            document.getElementById('motiko_clouds').play();
-        }
-        // ブザーの音を鳴らす
-        function buzz_first() {
-            document.getElementById('buzzer_first').play();
-        }
-        function buzz_end() {
-            document.getElementById('buzzer_end').play();
-        }
-
-        // ポモドーロタイマー
-        let countdown;
-        function startPomodoro() {
-            clearInterval(countdown); // 既存のタイマーをクリア
-            const now = Date.now();
-            const then = now + 25 * 60 * 1000; // 25分後
-
-            buzz_first();
-            countdown = setInterval(() => {
-                const secondsLeft = Math.round((then - Date.now()) / 1000);
-
-                // タイマーが0になったら休憩時間を開始
-                if (secondsLeft < 0) {
-                    clearInterval(countdown);
-                    startBreak();
-                    return;
-                }
-
-                // 残り時間を表示
-                const minutes = Math.floor(secondsLeft / 60);
-                const seconds = secondsLeft % 60;
-                document.getElementById('pomodoro-timer').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            }, 1000);
-        }
-
-        // 休憩時間
-        function startBreak() {
-            const now = Date.now();
-            const then = now + 5 * 60 * 1000; // 5分後
-            buzz_end();
-            countdown = setInterval(() => {
-                const secondsLeft = Math.round((then - Date.now()) / 1000);
-
-                // タイマーが0になったら作業時間を再開
-                if (secondsLeft < 0) {
-                    clearInterval(countdown);
-                    startPomodoro();
-                    return;
-                }
-
-                // 残り時間を表示
-                const minutes = Math.floor(secondsLeft / 60);
-                const seconds = secondsLeft % 60;
-                document.getElementById('pomodoro-timer').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            }, 1000);
-        }
-        function stopPomodoro() {
-            clearInterval(countdown); // タイマーをクリア
-        }
-
-        // ポモドーロタイマーのリセット
-        function resetPomodoro() {
-            buzz_end();
-            clearInterval(countdown); // タイマーをクリア
-            document.getElementById('pomodoro-timer').textContent = '25:00'; // 時間を初期値に戻す
-        }
-    </script>
-
+    <script src="scripts.js"></script>
 </body>
 
 </html>

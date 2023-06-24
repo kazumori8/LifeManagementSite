@@ -1,0 +1,70 @@
+body {
+    background-color: #ffffff;
+    font-family: Arial, sans-serif;
+    color: #204d64;
+    text-align: center;
+}
+
+button {
+    background-color: #204d64;
+    color: white;
+    padding: 7px 10px; /* 半分にした */
+    margin: 4px 0; /* 半分にした */
+    border: none;
+    border-radius: 12px;
+    /* ボタンに丸みを付ける */
+    cursor: pointer;
+    width: 20%;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+h2 {
+    text-align: center;
+}
+
+#weather-box {
+    display: flex;
+    /* 天気のボックスを横並びに */
+    justify-content: center;
+    /* 中央寄せ */
+    gap: 10px;
+    /* ボックス間の隙間 */
+}
+
+.weather-info {
+    background-color: white;
+    /* ボックスの背景色を白に */
+    padding: 10px; /* 半分にした */
+    border-radius: 12px;
+    /* ボックスに丸みを付ける */
+    width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    /* ボックスに影を付ける */
+}
+#morning-weather-temp, #afternoon-weather-temp, #evening-weather-temp{
+    font-weight: bold;
+    color: #204d64;
+}
+
+#pomodoro-timer {
+    font-size: 2em;
+    margin-top: 25px;
+}
+
+body {
+    display: flex;
+    justify-content: space-between;
+}
+
+#content {
+    flex: 1 0 auto;
+    margin-right: 1em;
+}
+
+#calendar {
+    flex: 0 0 auto;
+}
+
